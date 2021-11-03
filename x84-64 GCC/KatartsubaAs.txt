@@ -1,0 +1,323 @@
+getSize(long):
+        push    rbp
+        mov     rbp, rsp
+        mov     QWORD PTR [rbp-24], rdi
+        mov     DWORD PTR [rbp-4], 0
+        jmp     .L2
+.L3:
+        add     DWORD PTR [rbp-4], 1
+        mov     rcx, QWORD PTR [rbp-24]
+        movabs  rdx, 7378697629483820647
+        mov     rax, rcx
+        imul    rdx
+        mov     rax, rdx
+        sar     rax, 2
+        sar     rcx, 63
+        mov     rdx, rcx
+        sub     rax, rdx
+        mov     QWORD PTR [rbp-24], rax
+.L2:
+        cmp     QWORD PTR [rbp-24], 0
+        jg      .L3
+        mov     eax, DWORD PTR [rbp-4]
+        pop     rbp
+        ret
+karatsuba(long, long):
+        push    rbp
+        mov     rbp, rsp
+        push    rbx
+        sub     rsp, 120
+        mov     QWORD PTR [rbp-104], rdi
+        mov     QWORD PTR [rbp-112], rsi
+        cmp     QWORD PTR [rbp-104], 9
+        jg      .L6
+        cmp     QWORD PTR [rbp-112], 9
+        jg      .L6
+        mov     rax, QWORD PTR [rbp-104]
+        imul    rax, QWORD PTR [rbp-112]
+        jmp     .L7
+.L6:
+        mov     rax, QWORD PTR [rbp-112]
+        mov     rdi, rax
+        call    getSize(long)
+        mov     ebx, eax
+        mov     rax, QWORD PTR [rbp-104]
+        mov     rdi, rax
+        call    getSize(long)
+        mov     esi, ebx
+        mov     edi, eax
+        call    __gnu_cxx::__promote_2<int, int, __gnu_cxx::__promote<int, std::__is_integer<int>::__value>::__type, __gnu_cxx::__promote<int, std::__is_integer<int>::__value>::__type>::__type std::fmax<int, int>(int, int)
+        cvttsd2si       eax, xmm0
+        mov     DWORD PTR [rbp-20], eax
+        pxor    xmm0, xmm0
+        cvtsi2sd        xmm0, DWORD PTR [rbp-20]
+        movsd   xmm1, QWORD PTR .LC0[rip]
+        divsd   xmm0, xmm1
+        movq    rax, xmm0
+        movq    xmm0, rax
+        call    ceil
+        cvttsd2si       eax, xmm0
+        mov     DWORD PTR [rbp-24], eax
+        mov     eax, DWORD PTR [rbp-24]
+        mov     esi, eax
+        mov     edi, 10
+        call    __gnu_cxx::__promote_2<int, int, __gnu_cxx::__promote<int, std::__is_integer<int>::__value>::__type, __gnu_cxx::__promote<int, std::__is_integer<int>::__value>::__type>::__type std::pow<int, int>(int, int)
+        cvttsd2si       rax, xmm0
+        mov     QWORD PTR [rbp-32], rax
+        pxor    xmm0, xmm0
+        cvtsi2sd        xmm0, QWORD PTR [rbp-104]
+        pxor    xmm1, xmm1
+        cvtsi2sd        xmm1, QWORD PTR [rbp-32]
+        divsd   xmm0, xmm1
+        movq    rax, xmm0
+        movq    xmm0, rax
+        call    floor
+        cvttsd2si       rax, xmm0
+        mov     QWORD PTR [rbp-40], rax
+        mov     rax, QWORD PTR [rbp-104]
+        cqo
+        idiv    QWORD PTR [rbp-32]
+        mov     QWORD PTR [rbp-48], rdx
+        pxor    xmm0, xmm0
+        cvtsi2sd        xmm0, QWORD PTR [rbp-112]
+        pxor    xmm1, xmm1
+        cvtsi2sd        xmm1, QWORD PTR [rbp-32]
+        divsd   xmm0, xmm1
+        movq    rax, xmm0
+        movq    xmm0, rax
+        call    floor
+        cvttsd2si       rax, xmm0
+        mov     QWORD PTR [rbp-56], rax
+        mov     rax, QWORD PTR [rbp-112]
+        cqo
+        idiv    QWORD PTR [rbp-32]
+        mov     QWORD PTR [rbp-64], rdx
+        mov     rdx, QWORD PTR [rbp-56]
+        mov     rax, QWORD PTR [rbp-40]
+        mov     rsi, rdx
+        mov     rdi, rax
+        call    karatsuba(long, long)
+        mov     QWORD PTR [rbp-72], rax
+        mov     rdx, QWORD PTR [rbp-64]
+        mov     rax, QWORD PTR [rbp-48]
+        mov     rsi, rdx
+        mov     rdi, rax
+        call    karatsuba(long, long)
+        mov     QWORD PTR [rbp-80], rax
+        mov     rdx, QWORD PTR [rbp-56]
+        mov     rax, QWORD PTR [rbp-64]
+        add     rdx, rax
+        mov     rcx, QWORD PTR [rbp-40]
+        mov     rax, QWORD PTR [rbp-48]
+        add     rax, rcx
+        mov     rsi, rdx
+        mov     rdi, rax
+        call    karatsuba(long, long)
+        sub     rax, QWORD PTR [rbp-72]
+        sub     rax, QWORD PTR [rbp-80]
+        mov     QWORD PTR [rbp-88], rax
+        mov     eax, DWORD PTR [rbp-24]
+        add     eax, eax
+        mov     esi, eax
+        mov     edi, 10
+        call    __gnu_cxx::__promote_2<long, int, __gnu_cxx::__promote<long, std::__is_integer<long>::__value>::__type, __gnu_cxx::__promote<int, std::__is_integer<int>::__value>::__type>::__type std::pow<long, int>(long, int)
+        pxor    xmm1, xmm1
+        cvtsi2sd        xmm1, QWORD PTR [rbp-72]
+        mulsd   xmm0, xmm1
+        movsd   QWORD PTR [rbp-120], xmm0
+        mov     eax, DWORD PTR [rbp-24]
+        mov     esi, eax
+        mov     edi, 10
+        call    __gnu_cxx::__promote_2<long, int, __gnu_cxx::__promote<long, std::__is_integer<long>::__value>::__type, __gnu_cxx::__promote<int, std::__is_integer<int>::__value>::__type>::__type std::pow<long, int>(long, int)
+        pxor    xmm1, xmm1
+        cvtsi2sd        xmm1, QWORD PTR [rbp-88]
+        mulsd   xmm0, xmm1
+        movsd   xmm1, QWORD PTR [rbp-120]
+        addsd   xmm1, xmm0
+        pxor    xmm0, xmm0
+        cvtsi2sd        xmm0, QWORD PTR [rbp-80]
+        addsd   xmm0, xmm1
+        cvttsd2si       rax, xmm0
+.L7:
+        mov     rbx, QWORD PTR [rbp-8]
+        leave
+        ret
+.LC1:
+        .string "\n"
+main:
+        push    rbp
+        mov     rbp, rsp
+        sub     rsp, 208
+        mov     DWORD PTR [rbp-24], 4
+        mov     DWORD PTR [rbp-28], 4
+        mov     DWORD PTR [rbp-32], 4
+        mov     DWORD PTR [rbp-36], 1
+        mov     DWORD PTR [rbp-112], 1
+        mov     DWORD PTR [rbp-108], 1
+        mov     DWORD PTR [rbp-104], 1
+        mov     DWORD PTR [rbp-100], 1
+        mov     DWORD PTR [rbp-96], 1
+        mov     DWORD PTR [rbp-92], 1
+        mov     DWORD PTR [rbp-88], 1
+        mov     DWORD PTR [rbp-84], 1
+        mov     DWORD PTR [rbp-80], 1
+        mov     DWORD PTR [rbp-76], 1
+        mov     DWORD PTR [rbp-72], 1
+        mov     DWORD PTR [rbp-68], 1
+        mov     DWORD PTR [rbp-64], 1
+        mov     DWORD PTR [rbp-60], 1
+        mov     DWORD PTR [rbp-56], 1
+        mov     DWORD PTR [rbp-52], 1
+        mov     DWORD PTR [rbp-128], 1
+        mov     DWORD PTR [rbp-124], 1
+        mov     DWORD PTR [rbp-120], 1
+        mov     DWORD PTR [rbp-116], 1
+        mov     DWORD PTR [rbp-144], 1
+        mov     DWORD PTR [rbp-140], 1
+        mov     DWORD PTR [rbp-136], 1
+        mov     DWORD PTR [rbp-132], 1
+        mov     QWORD PTR [rbp-208], 0
+        mov     QWORD PTR [rbp-200], 0
+        mov     QWORD PTR [rbp-192], 0
+        mov     QWORD PTR [rbp-184], 0
+        mov     QWORD PTR [rbp-176], 0
+        mov     QWORD PTR [rbp-168], 0
+        mov     QWORD PTR [rbp-160], 0
+        mov     QWORD PTR [rbp-152], 0
+        mov     DWORD PTR [rbp-4], 0
+        jmp     .L9
+.L14:
+        mov     DWORD PTR [rbp-8], 0
+        jmp     .L10
+.L13:
+        mov     DWORD PTR [rbp-12], 0
+        jmp     .L11
+.L12:
+        mov     eax, DWORD PTR [rbp-8]
+        movsx   rdx, eax
+        mov     eax, DWORD PTR [rbp-4]
+        cdqe
+        sal     rax, 2
+        add     rax, rdx
+        mov     ecx, DWORD PTR [rbp-208+rax*4]
+        mov     eax, DWORD PTR [rbp-12]
+        movsx   rdx, eax
+        mov     eax, DWORD PTR [rbp-4]
+        cdqe
+        sal     rax, 2
+        add     rax, rdx
+        mov     edx, DWORD PTR [rbp-112+rax*4]
+        mov     eax, DWORD PTR [rbp-8]
+        movsx   rsi, eax
+        mov     eax, DWORD PTR [rbp-12]
+        cdqe
+        add     rax, rsi
+        mov     eax, DWORD PTR [rbp-128+rax*4]
+        imul    eax, edx
+        lea     edx, [rcx+rax]
+        mov     eax, DWORD PTR [rbp-8]
+        movsx   rcx, eax
+        mov     eax, DWORD PTR [rbp-4]
+        cdqe
+        sal     rax, 2
+        add     rax, rcx
+        mov     DWORD PTR [rbp-208+rax*4], edx
+        add     DWORD PTR [rbp-12], 1
+.L11:
+        mov     eax, DWORD PTR [rbp-12]
+        cmp     eax, DWORD PTR [rbp-32]
+        jl      .L12
+        add     DWORD PTR [rbp-8], 1
+.L10:
+        mov     eax, DWORD PTR [rbp-8]
+        cmp     eax, DWORD PTR [rbp-36]
+        jl      .L13
+        add     DWORD PTR [rbp-4], 1
+.L9:
+        mov     eax, DWORD PTR [rbp-4]
+        cmp     eax, DWORD PTR [rbp-24]
+        jl      .L14
+        mov     DWORD PTR [rbp-16], 0
+        jmp     .L15
+.L18:
+        mov     DWORD PTR [rbp-20], 0
+        jmp     .L16
+.L17:
+        mov     eax, DWORD PTR [rbp-20]
+        movsx   rdx, eax
+        mov     eax, DWORD PTR [rbp-16]
+        cdqe
+        sal     rax, 2
+        add     rax, rdx
+        mov     edx, DWORD PTR [rbp-208+rax*4]
+        mov     eax, DWORD PTR [rbp-20]
+        movsx   rcx, eax
+        mov     eax, DWORD PTR [rbp-16]
+        cdqe
+        add     rax, rcx
+        mov     eax, DWORD PTR [rbp-144+rax*4]
+        add     edx, eax
+        mov     eax, DWORD PTR [rbp-20]
+        movsx   rcx, eax
+        mov     eax, DWORD PTR [rbp-16]
+        cdqe
+        sal     rax, 2
+        add     rax, rcx
+        mov     DWORD PTR [rbp-208+rax*4], edx
+        mov     eax, DWORD PTR [rbp-20]
+        movsx   rdx, eax
+        mov     eax, DWORD PTR [rbp-16]
+        cdqe
+        sal     rax, 2
+        add     rax, rdx
+        mov     eax, DWORD PTR [rbp-208+rax*4]
+        mov     esi, eax
+        mov     edi, OFFSET FLAT:_ZSt4cout
+        call    std::basic_ostream<char, std::char_traits<char> >::operator<<(int)
+        mov     esi, OFFSET FLAT:.LC1
+        mov     rdi, rax
+        call    std::basic_ostream<char, std::char_traits<char> >& std::operator<< <std::char_traits<char> >(std::basic_ostream<char, std::char_traits<char> >&, char const*)
+        add     DWORD PTR [rbp-20], 1
+.L16:
+        mov     eax, DWORD PTR [rbp-20]
+        cmp     eax, DWORD PTR [rbp-36]
+        jl      .L17
+        add     DWORD PTR [rbp-16], 1
+.L15:
+        mov     eax, DWORD PTR [rbp-16]
+        cmp     eax, DWORD PTR [rbp-24]
+        jl      .L18
+        mov     eax, 0
+        leave
+        ret
+__static_initialization_and_destruction_0(int, int):
+        push    rbp
+        mov     rbp, rsp
+        sub     rsp, 16
+        mov     DWORD PTR [rbp-4], edi
+        mov     DWORD PTR [rbp-8], esi
+        cmp     DWORD PTR [rbp-4], 1
+        jne     .L28
+        cmp     DWORD PTR [rbp-8], 65535
+        jne     .L28
+        mov     edi, OFFSET FLAT:_ZStL8__ioinit
+        call    std::ios_base::Init::Init() [complete object constructor]
+        mov     edx, OFFSET FLAT:__dso_handle
+        mov     esi, OFFSET FLAT:_ZStL8__ioinit
+        mov     edi, OFFSET FLAT:_ZNSt8ios_base4InitD1Ev
+        call    __cxa_atexit
+.L28:
+        nop
+        leave
+        ret
+_GLOBAL__sub_I_getSize(long):
+        push    rbp
+        mov     rbp, rsp
+        mov     esi, 65535
+        mov     edi, 1
+        call    __static_initialization_and_destruction_0(int, int)
+        pop     rbp
+        ret
+.LC0:
+        .long   0
+        .long   1073741824
