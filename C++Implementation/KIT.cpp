@@ -16,28 +16,41 @@ int getSize(long num)
 
 long karatsuba(long X, long Y)
 {
-
-
     // Base Case
     if (X < 10 && Y < 10)
         return X * Y;
 
-    // determine the size of X and Y
-    int size = fmax(getSize(X), getSize(Y));
+    int n = 0;
+    long p = 0;
 
-    // Split X and Y
-    int n = (int)ceil(size / 2.0);
-    long p = (long)pow(10, n);
-    long a = (long)floor(X / (double)p);
-    long b = X % p;
-    long c = (long)floor(Y / (double)p);
-    long d = Y % p;
+    long a = 0;
+    long b = 0;
+    long c = 0;
+    long d = 0;
 
-    // Recur until base case
-    long ac = karatsuba(a, c); // for loop
-    long bd = karatsuba(b, d);
-    long e = karatsuba(a + b, c + d) - ac - bd;
+    long ac = 0;
+    long bd = 0;
+    long e = 0;
 
+    while (X >= 10 && Y >= 10)
+    {
+        // determine the size of X and Y
+        int size = fmax(getSize(X), getSize(Y));
+
+        // Split X and Y
+        n = (int)ceil(size / 2.0);
+        p = (long)pow(10, n);
+
+        a = (long)floor(X / (double)p);
+        b = X % p;
+        c = (long)floor(Y / (double)p);
+        d = Y % p;
+
+        // Recur until exit loop
+        ac = a * c;
+        bd = b * d;
+        e = (a + b) * (c + d) - ac - bd;
+    }
     // return the equation
     return (long)(pow(10 * 1L, 2 * n) * ac + pow(10 * 1L, n) * e + bd);
 }
